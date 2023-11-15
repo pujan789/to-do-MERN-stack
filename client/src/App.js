@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./index.css"; // Import your CSS file
+import "./index.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,11 +8,13 @@ const API_BASE = "http://localhost:3001";
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [filterType, setFilterType] = useState('all'); // 'all', 'active', or 'complete'
+  const [filterType, setFilterType] = useState('all');
+  const [newTodoText, setNewTodoText] = useState('');
+  const [newTodoPriority, setNewTodoPriority] = useState(0);
 
   useEffect(() => {
     getTodos();
-  }, []);
+  }, [filterType]);
 
   const getTodos = () => {
     fetch(API_BASE + "/todos")
@@ -43,6 +45,25 @@ function App() {
     getTodos();
   };
 
+  const addTodo = async () => {
+    if (!newTodoText) return;
+
+    await axios.post(`http://localhost:3001/todo/new`, {
+      text: newTodoText,
+      priority: newTodoPriority,
+    });
+
+    setNewTodoText('');
+    setNewTodoPriority(0);
+    getTodos();
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      addTodo();
+    }
+  };
+
   const toggleFilter = (type) => {
     setFilterType(type);
   };
@@ -61,31 +82,32 @@ function App() {
       </nav>
       <div className="add">
         <div className="add__priority">
-          <label className="add__radio" title="Priority 0">
-            <input checked type="radio" name="priority" />
-            <span className="add__circle"></span>
-          </label>
-          <label className="add__radio add__radio--1" title="Priority 1">
-            <input type="radio" name="priority" />
-            <span className="add__circle"></span>
-          </label>
-          <label className="add__radio add__radio--2" title="Priority 2">
-            <input type="radio" name="priority" />
-            <span className="add__circle"></span>
-          </label>
-          <label className="add__radio add__radio--3" title="Priority 3">
-            <input type="radio" name="priority" />
-            <span className="add__circle"></span>
-          </label>
+          {[0, 1, 2, 3].map((priority) => (
+            <label key={priority} className={`add__radio add__radio--${priority}`} title={`Priority ${priority}`}>
+              <input
+                type="radio"
+                name="priority"
+                checked={newTodoPriority === priority}
+                onChange={() => setNewTodoPriority(priority)}
+              />
+              <span className="add__circle"></span>
+            </label>
+          ))}
         </div>
-        <input placeholder="+ Add todo item" type="text" className="add__input" />
+        <input
+          placeholder="+ Add todo item"
+          type="text"
+          className="add__input"
+          value={newTodoText}
+          onChange={(e) => setNewTodoText(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
       </div>
       <ul className="list">
         {filteredTodos.map(todo => (
           <li className={"item " + (todo.complete ? "done" : "")} key={todo._id}>
-            {/* your existing rendering logic */}
             <label className={`item__checkbox item__checkbox--${todo.priority}`}>
-              <input onClick={() => completeTodo(todo._id)} checked type="checkbox" />
+              <input onClick={() => completeTodo(todo._id)} checked={todo.complete} type="checkbox" />
               {todo.complete ? <FontAwesomeIcon icon={faCheck} /> : null}
             </label>
             {todo.text}

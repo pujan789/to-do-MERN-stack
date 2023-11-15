@@ -14,8 +14,6 @@ This is a simple Todo application built with the MERN (MongoDB, Express, React, 
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -87,6 +85,3 @@ Before you begin, ensure you have met the following requirements:
 - DELETE `/todo/delete/:id`: Delete a todo by ID
 - PATCH `/todo/complete/:id`: Toggle the completion status of a todo by ID
 
-## Contributing
-
-Contributions are welcome! Please follow the [Contributing Guidelines](CONTRIBUTING.md).

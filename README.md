@@ -1,4 +1,4 @@
-# to-do-MERN-stack
+# To-do-MERN-stack
 Last to-do list was created only with Express, Node and some HTML and CSS. But this time it is entire MERN stack project with react and mongoDB.
 
 
